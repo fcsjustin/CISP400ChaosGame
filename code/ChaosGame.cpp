@@ -1,90 +1,88 @@
-// Include important C++ libraries here
 #include <SFML/Graphics.hpp>
 #include <SFML/Audio.hpp>
 #include <iostream>
-#include <sstream>
 #include <vector>
+#include <ctime>
 
-// Make code easier to type with "using namespace"
 using namespace sf;
 using namespace std;
 
 int main()
 {
     // Create a video mode object
-	VideoMode vm(1920, 1080);
-	// Create and open a window for the game
-	RenderWindow window(vm, "Timber Game!!", Style::Default);
+    VideoMode vm(1920, 1080);
+    // Create and open a window for the game
+    RenderWindow window(vm, "Triangle Fractal", Style::Default);
 
     vector<Vector2f> vertices;
     vector<Vector2f> points;
+    srand(static_cast<unsigned>(time(NULL)));
 
-	while (window.isOpen())
-	{
-        /*
-		****************************************
-		Handle the players input
-		****************************************
-		*/
+    while (window.isOpen())
+    {
         Event event;
-		while (window.pollEvent(event))
-		{
+        while (window.pollEvent(event))
+        {
             if (event.type == Event::Closed)
             {
-				// Quit the game when the window is closed
-				window.close();
+                window.close();
             }
-            if (event.type == sf::Event::MouseButtonPressed)
+            if (event.type == Event::MouseButtonPressed)
             {
-                if (event.mouseButton.button == sf::Mouse::Left)
+                if (event.mouseButton.button == Mouse::Left)
                 {
-                    std::cout << "the left button was pressed" << std::endl;
-                    std::cout << "mouse x: " << event.mouseButton.x << std::endl;
-                    std::cout << "mouse y: " << event.mouseButton.y << std::endl;
+                    cout << "the left button was pressed" << endl;
+                    cout << "mouse x: " << event.mouseButton.x << endl;
+                    cout << "mouse y: " << event.mouseButton.y << endl;
 
-                    if(vertices.size() < 3)
+                    if (vertices.size() < 3)
                     {
                         vertices.push_back(Vector2f(event.mouseButton.x, event.mouseButton.y));
                     }
-                    else if(points.size() == 0)
+                    else if (points.empty())
                     {
-                        ///fourth click
-                        ///push back to points vector
+                        // Fourth click, push back to points vector
+                        points.push_back(Vector2f(event.mouseButton.x, event.mouseButton.y));
                     }
                 }
             }
         }
-        if (Keyboard::isKeyPressed(Keyboard::Escape))
-		{
-			window.close();
-		}
-        /*
-		****************************************
-		Update
-		****************************************
-		*/
 
-        if(points.size() > 0)
+        if (Keyboard::isKeyPressed(Keyboard::Escape))
         {
-            ///generate more point(s)
-            ///select random vertex
-            ///calculate midpoint between random vertex and the last point in the vector
-            ///push back the newly generated coord.
+            window.close();
         }
 
-        /*
-		****************************************
-		Draw
-		****************************************
-		*/
-        window.clear();
-        for(int i = 0; i < vertices.size(); i++)
+        if (points.size() > 0)
         {
-            RectangleShape rect(Vector2f(10,10));
-            rect.setPosition(Vector2f(vertices[i].x, vertices[i].y));
+            // Generate more points within the triangle
+            int randomVertexIndex = rand() % 3; // Randomly select one of the three vertices
+            Vector2f lastPoint = points.back();
+            Vector2f selectedVertex = vertices[randomVertexIndex];
+            Vector2f midpoint = (lastPoint + selectedVertex) / 2.0f;
+            points.push_back(midpoint);
+        }
+
+        window.clear();
+
+        for (size_t i = 0; i < vertices.size(); i++)
+        {
+            RectangleShape rect(Vector2f(10, 10));
+            rect.setPosition(vertices[i]);
             rect.setFillColor(Color::Blue);
             window.draw(rect);
         }
+
+        for (size_t i = 0; i < points.size(); i++)
+        {
+            CircleShape circle(5);
+            circle.setPosition(points[i]);
+            circle.setFillColor(Color::Red);
+            window.draw(circle);
+        }
+
         window.display();
     }
+
+    return 0;
 }
