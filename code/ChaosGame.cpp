@@ -32,11 +32,23 @@ int main()
     instructionText.setPosition(10, 10);
     instructionText.setString("Click on any three points to create the vertices for the triangle.");
 
-    Text algorithmText;
-    algorithmText.setFont(font);
-    algorithmText.setCharacterSize(30);
-    algorithmText.setFillColor(Color::White);
-    algorithmText.setPosition(10, 50);
+    Text algorithmText1;
+    algorithmText1.setFont(font);
+    algorithmText1.setCharacterSize(30);
+    algorithmText1.setFillColor(Color::Blue);
+    algorithmText1.setPosition(10, 50);
+
+    Text algorithmText2;
+    algorithmText2.setFont(font);
+    algorithmText2.setCharacterSize(30);
+    algorithmText2.setFillColor(Color::Magenta);
+    algorithmText2.setPosition(10, 90);
+   
+    Text algorithmText3;
+    algorithmText3.setFont(font);
+    algorithmText3.setCharacterSize(40);
+    algorithmText3.setFillColor(Color::Cyan);
+    algorithmText3.setPosition(10, 300);
 
     bool algorithmStarted = false;
     Vector2f startCoordinate;
@@ -59,24 +71,29 @@ int main()
                         if (vertices.size() < 3)
                         {
                             vertices.push_back(Vector2f(event.mouseButton.x, event.mouseButton.y));
+                            if (vertices.size() == 3)
+                            {
+                                algorithmText1.setString("Choice your starting point to begin algorithm.");
+                            }
                         }
                         else
                         {
                             algorithmStarted = true;
                             startCoordinate = Vector2f(event.mouseButton.x, event.mouseButton.y);
-                            algorithmText.setString("Algorithm started. Click to generate points.");
+                            algorithmText2.setString("Algorithm started. Click to generate points.");
+                            algorithmText3.setString("1 Click = 25 points (ctrl to end)");
                         }
                     }
                 }
                 else
                 {
                     for (int i = 0; i < 25; i++)
-                    {   
-                    int randomVertexIndex = rand() % vertices.size();
-                    Vector2f lastPoint = points.empty() ? startCoordinate : points.back();
-                    Vector2f selectedVertex = vertices[randomVertexIndex];
-                    Vector2f midpoint = (lastPoint + selectedVertex) / 2.0f;
-                    points.push_back(midpoint);
+                    {
+                        int randomVertexIndex = rand() % vertices.size();
+                        Vector2f lastPoint = points.empty() ? startCoordinate : points.back();
+                        Vector2f selectedVertex = vertices[randomVertexIndex];
+                        Vector2f midpoint = (lastPoint + selectedVertex) / 2.0f;
+                        points.push_back(midpoint);
                     }
                 }
             }
@@ -106,7 +123,9 @@ int main()
         }
 
         window.draw(instructionText);
-        window.draw(algorithmText);
+        window.draw(algorithmText1);
+        window.draw(algorithmText2);
+        window.draw(algorithmText3);
         window.display();
     }
 
