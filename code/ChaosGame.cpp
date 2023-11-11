@@ -70,16 +70,21 @@ int main()
                     {
                         if (vertices.size() < 3)
                         {
-                            vertices.push_back(Vector2f(event.mouseButton.x, event.mouseButton.y));
+                            Vector2f clickCoordinate(event.mouseButton.x, event.mouseButton.y);
+                            vertices.push_back(clickCoordinate);
+                            cout << "Vertex " << vertices.size() << " clicked at: (" << clickCoordinate.x << ", " << clickCoordinate.y << ")\n";
+
                             if (vertices.size() == 3)
                             {
-                                algorithmText1.setString("Choice your starting point to begin algorithm.");
+                                startCoordinate = clickCoordinate;
+                                algorithmText1.setString("Choose your starting point to begin the algorithm.");
                             }
                         }
                         else
                         {
                             algorithmStarted = true;
-                            startCoordinate = Vector2f(event.mouseButton.x, event.mouseButton.y);
+                            points.push_back(Vector2f(event.mouseButton.x, event.mouseButton.y));
+                            
                             algorithmText2.setString("Algorithm started. Click to generate points.");
                             algorithmText3.setString("1 Click = 25 points (ctrl to end)");
                         }
@@ -87,7 +92,7 @@ int main()
                 }
                 else
                 {
-                    for (int i = 0; i < 25; i++)
+                    for (int i = 0; i < 100; i++)
                     {
                         int randomVertexIndex = rand() % vertices.size();
                         Vector2f lastPoint = points.empty() ? startCoordinate : points.back();
