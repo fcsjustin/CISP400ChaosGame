@@ -92,7 +92,7 @@ int main()
                 }
                 else
                 {
-                    for (int i = 0; i < 100; i++)
+                    for (int i = 0; i < 25; i++)
                     {
                         int randomVertexIndex = rand() % vertices.size();
                         Vector2f lastPoint = points.empty() ? startCoordinate : points.back();
