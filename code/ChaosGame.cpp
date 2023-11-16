@@ -38,8 +38,8 @@ void generateTriangleFractal(vector<Vector2f>& points, const vector<Vector2f>& v
     generateTriangleFractal(points, vertices, depth - 1);
 }
 
-//Menu for user selection
-void drawMenu(RenderWindow& window, Font& font, FractalType& currentFractalType) 
+// Menu for user selection
+void drawMenu(RenderWindow& window, Font& font, FractalType& currentFractalType)
 {
     Text menuText;
     menuText.setFont(font);
@@ -50,11 +50,11 @@ void drawMenu(RenderWindow& window, Font& font, FractalType& currentFractalType)
 
     window.draw(menuText);
 
-    if (currentFractalType == TRIANGLE) 
+    if (currentFractalType == TRIANGLE)
     {
         menuText.setString("Current Fractal: Triangle");
     }
-    else 
+    else
     {
         menuText.setString("Current Fractal: Pentagon");
     }
@@ -67,6 +67,7 @@ int main()
 {
     // Create a video mode object
     VideoMode vm(1920, 1080);
+
     // Create and open a window for the game
     RenderWindow window(vm, "Chaos Game", Style::Default);
 
@@ -111,10 +112,7 @@ int main()
 
     FractalType currentFractalType = TRIANGLE;
 
-    Vector2f triangleMidpoint;
-    Vector2f pentagonMidpoint;
-
-    int previousVertexIndex = -1;  // Initialize with an invalid index
+    int previousVertexIndex = -1;
 
     while (window.isOpen())
     {
@@ -131,19 +129,19 @@ int main()
                 {
                     if (event.mouseButton.button == Mouse::Left)
                     {
-                        if (vertices.size() < (currentFractalType == TRIANGLE ? 3 : 5)) 
+                        if (vertices.size() < (currentFractalType == TRIANGLE ? 3 : 5))
                         {
                             Vector2f clickCoordinate(event.mouseButton.x, event.mouseButton.y);
                             vertices.push_back(clickCoordinate);
                             cout << "Vertex " << vertices.size() << " clicked at: (" << clickCoordinate.x << ", " << clickCoordinate.y << ")\n";
 
-                            if (vertices.size() == (currentFractalType == TRIANGLE ? 3 : 5)) 
+                            if (vertices.size() == (currentFractalType == TRIANGLE ? 3 : 5))
                             {
                                 startCoordinate = clickCoordinate;
                                 algorithmText1.setString("Choose your starting point to begin the algorithm.");
                             }
                         }
-                        else 
+                        else
                         {
                             algorithmStarted = true;
                             points.push_back(Vector2f(event.mouseButton.x, event.mouseButton.y));
@@ -153,12 +151,12 @@ int main()
                         }
                     }
                 }
-                else 
+                else
                 {
-                    for (int i = 0; i < 25; i++) 
+                    for (int i = 0; i < 25; i++)
                     {
                         int randomVertexIndex;
-                        do 
+                        do
                         {
                             randomVertexIndex = rand() % vertices.size();
                         } while (randomVertexIndex == previousVertexIndex);
@@ -166,30 +164,29 @@ int main()
                         Vector2f lastPoint = points.empty() ? startCoordinate : points.back();
                         Vector2f selectedVertex;
 
-                        if (currentFractalType == TRIANGLE) 
+                        if (currentFractalType == TRIANGLE)
                         {
                             selectedVertex = vertices[randomVertexIndex];
                             generateTriangleFractal(points, { lastPoint, selectedVertex }, 1);
                         }
-                        else 
+                        else
                         {
                             selectedVertex = vertices[randomVertexIndex];
-                            pentagonMidpoint = (1.25f * lastPoint + selectedVertex) / 3.0f;  //Distance factor
+                            Vector2f pentagonMidpoint = (1.4f * lastPoint + selectedVertex) / 3.0f;  // Distance factor
+                            points.push_back(pentagonMidpoint);
                         }
-
-                        points.push_back((currentFractalType == TRIANGLE) ? triangleMidpoint : pentagonMidpoint);
 
                         previousVertexIndex = randomVertexIndex;
                     }
                 }
             }
-            if (event.type == Event::KeyPressed) 
+            if (event.type == Event::KeyPressed)
             {
-                if (event.key.code == Keyboard::Escape) 
+                if (event.key.code == Keyboard::Escape)
                 {
                     window.close();
                 }
-                else if (event.key.code == Keyboard::T) 
+                else if (event.key.code == Keyboard::T)
                 {
                     currentFractalType = TRIANGLE;
                     vertices.clear();
@@ -197,13 +194,13 @@ int main()
                     algorithmStarted = false;
                     instructionText.setString("Click on any three points to create the vertices for the triangle.");
                 }
-                else if (event.key.code == Keyboard::P) 
+                else if (event.key.code == Keyboard::P)
                 {
                     currentFractalType = PENTAGON;
                     vertices.clear();
                     points.clear();
                     algorithmStarted = false;
-                    instructionText.setString("Click on any FIVE points to create the vertices for the PENTAGON.");
+                    instructionText.setString("Click on any five points to create the vertices for the pentagon.");
                 }
             }
         }
